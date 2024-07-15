@@ -1,83 +1,127 @@
-# ===========================================================================
-# Example EasyPanel Template
-# ===========================================================================
-#
-# Purpose:
-# --------
-#
-# This file is an example EasyPanel configuration for self hosting
-# Maybe on your local machine or on a cloud VPS.
-#
-# The configuration below is a "standard" setup, but may require modification
-# for your specific environment.
-#
-# Setup:
-# ------
-#
-# To run this, you should read the setup guide:
-#
-# https://github.com/maybe-finance/maybe/blob/main/docs/hosting/docker.md
-#
-# Troubleshooting:
-# ----------------
-#
-# If you run into problems, you should open a Discussion here:
-#
-# https://github.com/maybe-finance/maybe/discussions/categories/general
-#
+name: Maybe Finance
+description:
+  Maybe Finance is an open-source platform that empowers you to self-host the
+  application, either on your local machine or on a cloud VPS. The following
+  configuration sets up a standard environment for running Maybe Finance.
+instructions: null
+changeLog:
+  - date: 2024-07-14
+    description: first release
+links:
+  - label: Website
+    url: https://github.com/maybe-finance/maybe
+  - label: Documentation
+    url: https://github.com/maybe-finance/maybe/blob/main/docs/hosting/docker.md
+  - label: Discussions
+    url: https://github.com/maybe-finance/maybe/discussions/categories/general
+contributors:
+  - name: Maybe Finance Team
+    url: https://github.com/maybe-finance
+schema:
+  type: object
+  required:
+    - projectName
+    - appServiceName
+    - appServiceImage
+    - dbServiceName
+    - secretKeyBase
+    - dbPassword
+  properties:
+    projectName:
+      type: string
+      title: Project Name
+    appServiceName:
+      type: string
+      title: App Service Name
+      default: maybe-app
+    appServiceImage:
+      type: string
+      title: App Service Image
+      default: ghcr.io/maybe-finance/maybe:latest
+    dbServiceName:
+      type: string
+      title: Database Service Name
+      default: postgres
+    dbServiceImage:
+      type: string
+      title: Database Service Image
+      default: postgres:16
+    secretKeyBase:
+      type: string
+      title: Secret Key Base
+    dbPassword:
+      type: string
+      title: Database Password
+    dbUser:
+      type: string
+      title: Database User
+      default: maybe_user
+    dbName:
+      type: string
+      title: Database Name
+      default: maybe_production
+benefits:
+  - title: Flexibility
+    description:
+      Set up a custom self-hosted Maybe Finance instance with a standard
+      configuration that you can modify for your specific environment.
+  - title: Ease of Use
+    description:
+      Simple Docker Compose configuration to get you up and running quickly,
+      with built-in restart policies and health checks.
+  - title: Security
+    description:
+      Secure your setup with environment variables for sensitive information
+      like database passwords and secret keys.
+  - title: Community Support
+    description:
+      Access community support through Maybe Finance's GitHub Discussions for
+      troubleshooting and advice.
+features: []
+tags:
+  - Finance
+  - Self-Hosting
+  - Docker
+  - Open Source
+template:
+  version: "3.9"
+  services:
+    app:
+      image: ${appServiceImage}
+      volumes:
+        - app-storage:/rails/storage
+      ports:
+        - 3000:3000
+      restart: unless-stopped
+      environment:
+        SELF_HOSTING_ENABLED: "true"
+        RAILS_FORCE_SSL: "false"
+        RAILS_ASSUME_SSL: "false"
+        GOOD_JOB_EXECUTION_MODE: async
+        SECRET_KEY_BASE: ${secretKeyBase}
+        DB_HOST: ${dbServiceName}
+        POSTGRES_DB: ${dbName}
+        POSTGRES_USER: ${dbUser}
+        POSTGRES_PASSWORD: ${dbPassword}
+      depends_on:
+        ${dbServiceName}:
+          condition: service_healthy
 
-services:
-  - name: app
-    image: ghcr.io/maybe-finance/maybe:latest
-    volumes:
-      - name: app-storage
-        path: /rails/storage
-    ports:
-      - host: 3000
-        container: 3000
-    restart_policy: unless-stopped
-    environment:
-      - name: SELF_HOSTING_ENABLED
-        value: "true"
-      - name: RAILS_FORCE_SSL
-        value: "false"
-      - name: RAILS_ASSUME_SSL
-        value: "false"
-      - name: GOOD_JOB_EXECUTION_MODE
-        value: async
-      - name: SECRET_KEY_BASE
-        value: ${SECRET_KEY_BASE:?}
-      - name: DB_HOST
-        value: postgres
-      - name: POSTGRES_DB
-        value: ${POSTGRES_DB:-maybe_production}
-      - name: POSTGRES_USER
-        value: ${POSTGRES_USER:-maybe_user}
-      - name: POSTGRES_PASSWORD
-        value: ${POSTGRES_PASSWORD:?}
-    depends_on:
-      - name: postgres
-        condition: service_healthy
+    ${dbServiceName}:
+      image: ${dbServiceImage}
+      restart: unless-stopped
+      volumes:
+        - postgres-data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_USER: ${dbUser}
+        POSTGRES_DB: ${dbName}
+        POSTGRES_PASSWORD: ${dbPassword}
+      healthcheck:
+        test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+        interval: 5s
+        timeout: 5s
+        retries: 5
 
-  - name: postgres
-    image: postgres:16
-    restart_policy: unless-stopped
-    volumes:
-      - name: postgres-data
-        path: /var/lib/postgresql/data
-    environment:
-      - name: POSTGRES_USER
-        value: ${POSTGRES_USER:-maybe_user}
-      - name: POSTGRES_DB
-        value: ${POSTGRES_DB:-maybe_production}
-      - name: POSTGRES_PASSWORD
-        value: ${POSTGRES_PASSWORD:?}
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  - name: app-storage
-  - name: postgres-data
+  volumes:
+    app-storage:
+    postgres-data:
