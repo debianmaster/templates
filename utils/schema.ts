@@ -121,6 +121,42 @@ export const appSourceSchema = z
   ])
   .optional();
 
+export const composeSourceSchema = z
+  .union([
+    z.object({
+      type: z.literal("inline"),
+      content: z.string(),
+    }),
+    z.object({
+      type: z.literal("git"),
+      repo: z.string(),
+      ref: z.string(),
+      rootPath: z.string(),
+      composeFile: z.string(),
+    }),
+  ])
+  .optional();
+
+export const composeRedirectsSchema = z
+  .array(
+    z.object({
+      regex: z.string(),
+      replacement: z.string(),
+      permanent: z.boolean(),
+      enabled: z.boolean(),
+    })
+  )
+  .optional();
+
+export const composeBasicAuthSchema = z
+  .array(
+    z.object({
+      username: z.string(),
+      password: z.string(),
+    })
+  )
+  .optional();
+
 export const appBuildSchema = z
   .union([
     z.object({
@@ -173,7 +209,7 @@ export const appPortsSchema = z
   )
   .default([]);
 
-export const appDomainsSchema = z
+export const domainsSchema = z
   .array(
     z.object({
       host: domainRule,
@@ -181,6 +217,23 @@ export const appDomainsSchema = z
       port: z.number().default(80),
       path: z.string().startsWith("/").default("/"),
       middlewares: z.array(z.string()).optional(),
+      certificateResolver: z.string().optional(),
+      wildcard: z.boolean().default(false),
+    })
+  )
+  .default([]);
+
+export const composeDomainsSchema = z
+  .array(
+    z.object({
+      https: z.boolean().default(true),
+      host: domainRule,
+      port: z.number().default(80),
+      service: z.string().default(""),
+      path: z.string().startsWith("/").default("/"),
+      middlewares: z.array(z.string()).optional(),
+      certificateResolver: z.string().optional(),
+      wildcard: z.boolean().default(false),
     })
   )
   .default([]);
@@ -432,10 +485,22 @@ export const appSchema = z.object({
   env: z.string().default(""),
   basicAuth: appBasicAuthSchema,
   deploy: appDeploySchema,
-  domains: appDomainsSchema,
+  domains: domainsSchema,
   mounts: appMountsSchema,
   ports: appPortsSchema,
   resources: resourcesSchema,
+  maintenance: maintenanceSchema,
+});
+
+export const composeSchema = z.object({
+  projectName: projectNameRule,
+  serviceName: serviceNameRule,
+  source: composeSourceSchema,
+  env: z.string().default(""),
+  createDotEnv: z.boolean().default(false),
+  domains: composeDomainsSchema,
+  redirects: composeRedirectsSchema,
+  basicAuth: composeBasicAuthSchema,
   maintenance: maintenanceSchema,
 });
 
@@ -496,27 +561,31 @@ export const templateSchema = z.object({
     z.union([
       z.object({
         type: z.literal("app"),
-        data: appSchema,
+        data: appSchema.omit({ projectName: true }),
       }),
       z.object({
         type: z.literal("mysql"),
-        data: mysqlSchema,
+        data: mysqlSchema.omit({ projectName: true }),
       }),
       z.object({
         type: z.literal("mariadb"),
-        data: mariadbSchema,
+        data: mariadbSchema.omit({ projectName: true }),
       }),
       z.object({
         type: z.literal("mongo"),
-        data: mongoSchema,
+        data: mongoSchema.omit({ projectName: true }),
       }),
       z.object({
         type: z.literal("postgres"),
-        data: postgresSchema,
+        data: postgresSchema.omit({ projectName: true }),
       }),
       z.object({
         type: z.literal("redis"),
-        data: redisSchema,
+        data: redisSchema.omit({ projectName: true }),
+      }),
+      z.object({
+        type: z.literal("compose"),
+        data: composeSchema.omit({ projectName: true }),
       }),
     ])
   ),

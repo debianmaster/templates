@@ -9,7 +9,6 @@ export function generate(input: Input): Output {
   services.push({
     type: "app",
     data: {
-      projectName: input.projectName,
       serviceName: input.appServiceName,
       env: [
         `FORCE_SSL=true`,
@@ -17,7 +16,7 @@ export function generate(input: Input): Output {
       ].join("\n"),
       source: {
         type: "image",
-        image: "docuseal/docuseal:1.4.3",
+        image: "docuseal/docuseal:1.5.7",
       },
       mounts: [{ type: "volume", name: "data", mountPath: "/data" }],
       domains: [
@@ -31,11 +30,7 @@ export function generate(input: Input): Output {
 
   services.push({
     type: "postgres",
-    data: {
-      projectName: input.projectName,
-      serviceName: input.databaseServiceName,
-      password: dbPassword,
-    },
+    data: { serviceName: input.databaseServiceName, password: dbPassword },
   });
 
   return { services };

@@ -32,7 +32,6 @@ contributors:
 schema:
   type: object
   required:
-    - projectName
     - adminUsername
     - adminPassword
     - appServiceName
@@ -40,9 +39,6 @@ schema:
     - databaseServiceType
     - databaseServiceName
   properties:
-    projectName:
-      type: string
-      title: Project Name
     adminUsername:
       type: string
       title: Admin Username
@@ -56,7 +52,7 @@ schema:
     appServiceImage:
       type: string
       title: App Service Image
-      default: espocrm/espocrm:8.2.4-fpm-alpine
+      default: espocrm/espocrm:8-apache
     databaseServiceType:
       type: string
       title: Database Service Type

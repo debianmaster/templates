@@ -30,13 +30,9 @@ contributors:
 schema:
   type: object
   required:
-    - projectName
     - appServiceName
     - appServiceImage
   properties:
-    projectName:
-      type: string
-      title: Project Name
     appServiceName:
       type: string
       title: App Service Name
@@ -44,7 +40,7 @@ schema:
     appServiceImage:
       type: string
       title: App Service Image
-      default: augustodelg/pocketbase:0.22.6
+      default: spectado/pocketbase:latest
 benefits:
   - title: Realtime Database
     description:

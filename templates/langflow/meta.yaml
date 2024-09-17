@@ -22,18 +22,19 @@ contributors:
 schema:
   type: object
   required:
-    - projectName
     - appServiceName
+    - appServiceImage
     - username
     - password
   properties:
-    projectName:
-      type: string
-      title: Project Name
     appServiceName:
       type: string
       title: App Service Name
       default: langflow
+    appServiceImage:
+      type: string
+      title: App Service Image
+      default: langflowai/langflow:latest
     username:
       type: string
       title: Username

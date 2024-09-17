@@ -111,6 +111,13 @@
     ]
   },
   {
+    "slug": "appwrite",
+    "logo": "logo.svg",
+    "name": "Appwrite",
+    "description": "Appwrite is an open-source backend as a service server that abstracts and simplifies complex and repetitive development tasks behind a very simple to use REST API.",
+    "tags": []
+  },
+  {
     "slug": "audiobookshelf",
     "logo": "logo.png",
     "name": "Audiobookshelf",
@@ -473,6 +480,13 @@
       "File Management",
       "Networking Tools"
     ]
+  },
+  {
+    "slug": "dify",
+    "logo": null,
+    "name": "Dify",
+    "description": "Dify is an open-source platform designed to simplify the development and operation of AI applications using large language models (LLMs). It provides features like visual prompt orchestration, RAG pipeline, agent capabilities, model management, and LLMOps for efficient monitoring and analysis.",
+    "tags": []
   },
   {
     "slug": "directus",
@@ -1931,6 +1945,13 @@
     ]
   },
   {
+    "slug": "plane",
+    "logo": "logo.svg",
+    "name": "Plane",
+    "description": "Plane is an open-source project management tool designed to help teams manage tasks, sprints, and product roadmaps efficiently. It offers features like issue tracking, cycles, modules, custom views, pages, and real-time analytics.",
+    "tags": []
+  },
+  {
     "slug": "planka",
     "logo": "logo.png",
     "name": "Planka",
@@ -2347,6 +2368,13 @@
     ]
   },
   {
+    "slug": "supabase",
+    "logo": "logo.svg",
+    "name": "Supabase",
+    "description": "Supabase is an open source Firebase alternative. Supabase is built on top of Postgres, and it's easy to set up and use. Supabase is also completely free to use, and it's completely open source.",
+    "tags": []
+  },
+  {
     "slug": "supertokens-core",
     "logo": "logo.svg",
     "name": "Supertokens Core",
@@ -2459,6 +2487,13 @@
     "tags": [
       "Notes"
     ]
+  },
+  {
+    "slug": "twenty",
+    "logo": "logo.png",
+    "name": "Twenty",
+    "description": "Twenty is an open-source CRM platform designed to offer full customization and control over your customer relationship management. It provides the flexibility to self-host, avoiding vendor lock-in and offering cost-effective solutions.",
+    "tags": []
   },
   {
     "slug": "typebot",
